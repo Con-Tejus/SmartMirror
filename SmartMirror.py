@@ -19,6 +19,7 @@ from contextlib import contextmanager
 
 GEOIPKEY = "659815d5fd02d324c19ab5a3cb1a6e0d"
 WEATHERKEY = "afc268111c03d7cd3c092df5ca36de77"
+NEWSKEY = "aa7d7cc0a33848f4a203ffe607aff75f"
 
 latitude = None #should only be set if an IP lookup cannot be done
 longitude = None #should only be set if an IP lookup cannot be done
@@ -46,6 +47,19 @@ icon_lookup = {
     'tornado': "assests/Tornado.png",    # tornado
     'hail': "assests/Hail.png"  # hail
 }
+class News(Frame):
+    def __init__(self,parent, *args, **kwargs):
+        self.config(bg = 'black')
+        self.HeadLine = ''
+        self.Summary = ''
+        self.NewsSource = ''
+        self.HeadLineLbl = Label(self,font=('Helvetica', large_text_size), fg="white", bg="black")
+        self.HeadLineLbl.pack(side = TOP, anchor = N)
+        self.SummaryLbl(self,font=('Helvetica', small_text_size), fg="white", bg="black")
+        self.SummaryLbl.pack(side = TOP, anchor = N)
+        self.NewsSourceLbl(self,font=('Helvetica', small_text_size), fg="white", bg="black")
+        self.NewsSourceLbl.pack(side = TOP, anchor = N)
+
 
 class Clock(Frame):
     def __init__(self,parent, *args, **kwargs):
