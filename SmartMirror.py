@@ -49,6 +49,13 @@ icon_lookup = {
 }
 class News(Frame):
     def __init__(self,parent, *args, **kwargs):
+        Frame.__init__(self, parent, *args, **kwargs)
+        '''
+        HEADLINES:
+        ** First Headline
+        ** Second Headline
+        ** Third Headline
+        '''
         self.config(bg = 'black')
         self.HeadLine = ''
         self.Summary = ''
