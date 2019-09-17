@@ -29,6 +29,7 @@ xlarge_text_size = 94
 large_text_size = 48
 medium_text_size = 28
 small_text_size = 18
+xsmall_text_size = 12
 weekDays = ("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
 # maps open weather icons to
 # icon reading is not impacted by the 'lang' parameter
@@ -57,41 +58,91 @@ class News(Frame):
         ** Third Headline
         '''
         self.config(bg = 'black')
-        self.HeadLine = ''
+        self.HeadLine = 'Headlines:'
+        self.Title = ''
         self.Summary = ''
-        self.NewsSource = ''
-        self.HeadLineLbl = Label(self,font=('Helvetica', large_text_size), fg="white", bg="black")
-        self.HeadLineLbl.pack(side = TOP, anchor = N)
-        self.SummaryLbl(self,font=('Helvetica', small_text_size), fg="white", bg="black")
-        self.SummaryLbl.pack(side = TOP, anchor = N)
-        self.NewsSourceLbl(self,font=('Helvetica', small_text_size), fg="white", bg="black")
-        self.NewsSourceLbl.pack(side = TOP, anchor = N)
+        self.HeadLineLbl = Label(self, text = self.HeadLine,font=('Helvetica', large_text_size), fg="white", bg="black")
+        self.HeadLineLbl.pack(side = TOP, anchor = W)
+        self.TitleContainer = Frame(self, bg="black")
+        self.TitleContainer.pack(side = TOP)
+        self.get_headlines()
 
+    
+    def get_headlines(self):
+        try:
+            for widget in self.TitleContainer.winfo_children():
+                widget.destroy()
+
+            news_url = "https://newsapi.org/v2/top-headlines?country=us&apiKey="+NEWSKEY
+            req = requests.get(news_url)
+            news_json = json.loads(req.text)
+            
+            if(news_json['totalResults'] >= 5):
+                for article_index in range(0,6):
+                    self.Title = news_json['articles'][article_index]['title']
+                    self.Summary = news_json['articles'][article_index]['description']
+                    title = Headlines(self.TitleContainer,self.Title,self.Summary)
+                    title.pack(side = TOP, anchor  = W)
+            else:
+                print("Not enough stories posted check back later!")
+
+        except Exception as e:
+            traceback.print_exc()
+            return "Error %s, could not get headlines" % e
+
+        self.after(600000, self.get_headlines)
+
+class Headlines(Frame):
+    def __init__(self,parent, event_name = "", description = ""):
+        Frame.__init__(self, parent, bg = 'black')
+        image = Image.open("assets/Newspaper.png")
+        image = image.resize((25, 25), Image.ANTIALIAS)
+        image = image.convert('RGB')
+        photo = ImageTk.PhotoImage(image)
+
+        self.iconLbl = Label(self, bg='black', image=photo)
+        self.iconLbl.image = photo
+        self.iconLbl.pack(side=LEFT, anchor=N)
+        
+        self.eventName = event_name
+        self.eventNameLbl = Label(self, text=self.eventName, font=('Helvetica', small_text_size), fg="white", bg="black")
+        self.eventNameLbl.pack(side=LEFT, anchor=N)
+
+        self.Description = "    " + description
+        self.DescriptionLbl = Label(self, text = self.Description, font = ('Helvetica', xsmall_text_size), fg = "white", bg = "black")
+        self.DescriptionLbl.pack(side = TOP, anchor = W)
 
 class Clock(Frame):
     def __init__(self,parent, *args, **kwargs):
         Frame.__init__(self,parent,bg = 'black')
         self.dayofweek = ''
         self.time_clock = ''
+        self.time_seconds = ''
         self.date_clock = ''
         self.dayofweekLbl = Label(self,font=('Helvetica', large_text_size), fg="white", bg="black")
         self.dayofweekLbl.pack(side = TOP, anchor = E)
-        self.timeLbl = Label(self,font=('Helvetica', medium_text_size), fg="white", bg="black")
-        self.timeLbl.pack(side = TOP, anchor = E)
         self.dateLbl = Label(self,font=('Helvetica', small_text_size), fg="white", bg="black")
         self.dateLbl.pack(side = TOP, anchor = E)
+        self.seconds = Frame(self,bg = 'black')
+        self.seconds.pack(side = RIGHT, anchor = E)
+        self.secondsLbl = Label(self.seconds,font=('Helvetica', small_text_size), fg="white", bg="black")
+        self.secondsLbl.pack(side = TOP, anchor = E)
+        self.timeLbl = Label(self,font=('Helvetica', medium_text_size), fg="white", bg="black")
+        self.timeLbl.pack(side = TOP, anchor = E)
         self.tick()
 
     def tick(self):
         try:
-            self.time_clock = datetime.now().time()
-            self.time_clock = self.time_clock.strftime("%I:%M:%S %p")
+            curr_time = datetime.now().time()
+            self.time_clock = curr_time.strftime("%I:%M:")
+            self.time_seconds = curr_time.strftime("%S %p")
             self.date_clock = date.today()
             self.date_clock = self.date_clock.strftime("%B,%d,%Y")
             self.dayofweek = weekDays[datetime.today().weekday()]
 
             self.dayofweekLbl.config(text = self.dayofweek)
             self.timeLbl.config(text = self.time_clock)
+            self.secondsLbl.config(text = self.time_seconds)
             self.dateLbl.config(text = self.date_clock)
 
             self.timeLbl.after(200, self.tick)
@@ -140,7 +191,6 @@ class Weather(Frame):
 
         try:
             IPAddr = ip_json['ip']
-            print("current IP is:" + IPAddr)
             return IPAddr
 
         except Exception as e:
@@ -159,7 +209,6 @@ class Weather(Frame):
             Lat = location_json['latitude']
             Lon = location_json['longitude']
             location_info = {'city' : City, 'state' : State, 'latitude' : Lat , 'longitude' : Lon}
-            #print(City+" "+State)
             return location_info
 
         except Exception as e:
@@ -187,10 +236,6 @@ class Weather(Frame):
             self.forecast = weather_json['hourly']['summary']
             self.tempHigh = "%s%s" % (str(weather_json['daily']['data'][0]['temperatureHigh']), degree_sign)
             self.tempLow = "%s%s" % (str(weather_json['daily']['data'][0]['temperatureLow']), degree_sign)
-            print(self.CityState)
-            print("The current temp:" + self.temperature + "\nThe immediate forcast: " + self.forecast_imm)
-            print("Daily forcast: " + self.forecast)
-            print("The High for today will be: " + self.tempHigh + "\nThe Low for today will be: " + self.tempLow)
 
             if icon_id in icon_lookup:
                 self.icon = icon_lookup[icon_id]
@@ -228,11 +273,17 @@ class Window:
         self.tk.bind("<Escape>", self.end_fullscreen)
         self.topFrame = Frame(self.tk, background = 'black')
         self.topFrame.pack(side = TOP, fill = BOTH, expand = YES)
+        self.bottomFrame = Frame(self.tk, background = 'black')
+        self.bottomFrame.pack(side = BOTTOM, fill = BOTH, expand = YES)
+
         self.weather = Weather(self.topFrame)
         self.weather.pack(side = LEFT, anchor = N, padx = 100, pady = 60)
         
         self.clock = Clock(self.topFrame)
         self.clock.pack(side = RIGHT, anchor = N, padx = 100, pady = 60)
+
+        self.news = News(self.bottomFrame)
+        self.news.pack(side = LEFT, anchor = S, padx = 100, pady = 60)
 
     def toggle_fullscreen(self, event = None):
         self.FullScreen = True
@@ -245,5 +296,6 @@ class Window:
         return "break"
 
 if __name__ == '__main__':
+
     w = Window()
     w.tk.mainloop()
