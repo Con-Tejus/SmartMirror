@@ -1,4 +1,4 @@
-let size = 86;
+let size = 25;
 let columns = Array.from(document.getElementsByClassName('column'));
 let d, c;
 let classList = ['visible', 'close', 'far', 'far', 'distant', 'distant'];
@@ -28,7 +28,7 @@ let loop = setInterval(() => {
   columns.forEach((ele, i) => {
     let n = +c[i];
     let offset = -n * size;
-    ele.style.transform = `translateY(calc(50vh + ${offset}px - ${size / 2}px))`;
+    ele.style.transform = `translateY(calc(10vh + ${offset}px - ${size / 2}px))`;
     Array.from(ele.children).forEach((ele2, i2) => {
       ele2.className = 'num ' + getClass(n, i2);
     });

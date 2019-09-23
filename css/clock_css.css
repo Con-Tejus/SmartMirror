@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300");
 body {
-  text-align: center;
+  text-align: right;
   background-color: #000000;
   color: rgba(255, 255, 255, 0.89);
   font-family: 'Roboto Condensed', sans-serif;
@@ -12,8 +12,8 @@ body {
 .colon {
   display: inline-block;
   vertical-align: top;
-  font-size: 86px;
-  line-height: 86px;
+  font-size: 25px;
+  line-height: 25px;
 }
 
 .column {
@@ -27,7 +27,7 @@ body {
   transition: transform 300ms;
   transition: transform 300ms, -webkit-transform 300ms;
   -webkit-transform: translateY(calc(50vh - 43px));
-          transform: translateY(calc(50vh - 43px));
+          transform: translateY(calc(50vh - 536px));
 }
 .colon:after {
   content: ':';
@@ -42,12 +42,12 @@ body {
   text-shadow: 1px 1px 0px #336699;
 }
 .num.close {
-  opacity: 0.45;
+  opacity: 0.10;
 }
 .num.far {
-  opacity: 0.25;
+  opacity: 0.05;
 }
 .num.distant {
-  opacity: 0.2;
+  opacity: 0.02;
 }
 
