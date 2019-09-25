@@ -10,10 +10,12 @@ function padClock(p, n) {
 
 function getClock() {
   d = new Date();
+  var ampm = d.getHours >= 12 ? 'PM' : 'AM';
   return [
   use24HourClock ? d.getHours() : d.getHours() % 12 || 12,
   d.getMinutes(),
-  d.getSeconds()].
+  d.getSeconds(),
+  ampm].
 
   reduce(padClock, '');
 }
@@ -24,7 +26,10 @@ function getClass(n, i2) {
 
 let loop = setInterval(() => {
   c = getClock();
-
+  var pm_am = document.getElementsByClassName("pm_or_am");
+  console.log(pm_am);
+  pm_am[0].style.content = c[6];
+  console.log(pm_am[0].style.content);
   columns.forEach((ele, i) => {
     let n = +c[i];
     let offset = -n * size;

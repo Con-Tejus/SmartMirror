@@ -3,7 +3,7 @@ body {
   background-color: #000000;
 }
 #top_right {
-  text-align: right;
+  text-align: center;
   background-color: #000000;
   color: rgba(255, 255, 255, 0.89);
   font-family: 'Roboto Condensed', sans-serif;
@@ -11,6 +11,13 @@ body {
   overflow: hidden;
 }
 
+.column,
+.pm_or_am {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 25px;
+  line-height: 25px;
+}
 .column,
 .colon {
   display: inline-block;
@@ -34,6 +41,17 @@ body {
 }
 .colon:after {
   content: ':';
+}
+
+.pm_or_am {
+  transition: -webkit-transform 300ms;
+  transition: transform 300ms;
+  transition: transform 300ms, -webkit-transform 300ms;
+  -webkit-transform: translateY(calc(50vh - 43px));
+          transform: translateY(calc(50vh - 534px));
+}
+.pm_or_am:after {
+  content: "";
 }
 
 .num {
